@@ -27,6 +27,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
     ImageGridCell *fakeCell;
     NSIndexPath *indexBegin;
     NSIndexPath *indexOrg;
+    UILongPressGestureRecognizer *longPressTemp;
     
 }
 @property (nonatomic, strong) NSMutableArray *imagesArray;
@@ -98,6 +99,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 
 - (void)transitionFromPress:(UILongPressGestureRecognizer *)lo
 {
+
     switch (lo.state) {
         case UIGestureRecognizerStatePossible:
         {
@@ -106,6 +108,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             break;
         case UIGestureRecognizerStateBegan:
         {
+                longPressTemp = lo;
         }
             break;
         case UIGestureRecognizerStateChanged:
@@ -126,6 +129,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                 
                 fakeCell.center = [lo locationInView:lo.view.superview];
                 moveView.center = [lo locationInView:lo.view.superview];
+                moveView.alpha = 0;
                 [_gridView.visibleCells enumerateObjectsUsingBlock:^(ImageGridCell* obj, NSUInteger idx, BOOL *stop) {
                     if (obj == moveView) {
                         return ;
@@ -182,6 +186,13 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             else
             {
                 indexBegin = indextemp;
+
+//                if (longPressTemp == lo) {
+//                    
+//                }else{
+//                    indexBegin = indextemp;
+//                }
+                
             }
         }
             break;
@@ -213,6 +224,9 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             indextemp = nil;
             indexBegin = nil;
             fakeCell = nil;
+            ImageGridCell *moveView = ((ImageGridCell *)lo.view);
+            moveView.alpha = 1;
+
             [_gridView reloadData];
         }
             break;
@@ -291,17 +305,17 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 
 - (void)collectionView:(PSTCollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Delegate cell %@ : HIGHLIGHTED", [self formatIndexPath:indexPath]);
+//    NSLog(@"Delegate cell %@ : HIGHLIGHTED", [self formatIndexPath:indexPath]);
 }
 
 - (void)collectionView:(PSTCollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Delegate cell %@ : UNHIGHLIGHTED", [self formatIndexPath:indexPath]);
+//    NSLog(@"Delegate cell %@ : UNHIGHLIGHTED", [self formatIndexPath:indexPath]);
 }
 
 - (void)collectionView:(PSTCollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Delegate cell %@ : SELECTED", [self formatIndexPath:indexPath]);
+//    NSLog(@"Delegate cell %@ : SELECTED", [self formatIndexPath:indexPath]);
     return;
     if (indexPath.section == 0) {
         sectionNumbers0 --;
@@ -316,26 +330,26 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 
 - (void)collectionView:(PSTCollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Delegate cell %@ : DESELECTED", [self formatIndexPath:indexPath]);
+//    NSLog(@"Delegate cell %@ : DESELECTED", [self formatIndexPath:indexPath]);
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
     indexBegin = indexPath;
     indexOrg  = indexPath;
-    NSLog(@"Check delegate: should cell %@ highlight?", [self formatIndexPath:indexPath]);
+//    NSLog(@"Check delegate: should cell %@ highlight?", [self formatIndexPath:indexPath]);
     return YES;
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Check delegate: should cell %@ be selected?", [self formatIndexPath:indexPath]);
+//    NSLog(@"Check delegate: should cell %@ be selected?", [self formatIndexPath:indexPath]);
     return YES;
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Check delegate: should cell %@ be deselected?", [self formatIndexPath:indexPath]);
+//    NSLog(@"Check delegate: should cell %@ be deselected?", [self formatIndexPath:indexPath]);
     return YES;
 }
 
