@@ -143,8 +143,8 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                             [self.imagesArray replaceObjectAtIndex:indexOrg.section withObject:mut];
                             NSMutableArray *mu2t = [NSMutableArray arrayWithArray:[self.imagesArray objectAtIndex:indexP.section]];
                             [mu2t addObject:@"30.JPG"];
-                            [self.imagesArray replaceObjectAtIndex:0 withObject:mu2t];                        }
-                        
+                            self.imagesArray = [NSMutableArray arrayWithArray:@[mut,mu2t]];
+                        }
                         if (indextemp != nil && [indextemp compare:indexP]==NSOrderedSame) {
                             *stop = YES;
                             return;
