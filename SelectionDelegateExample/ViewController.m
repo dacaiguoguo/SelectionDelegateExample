@@ -97,7 +97,6 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 
 - (void)longPress:(UILongPressGestureRecognizer *)lo
 {
-    NSLog(@"Not yet implemented: %@", NSStringFromSelector(_cmd));
     switch (lo.state) {
         case UIGestureRecognizerStatePossible:
         {
@@ -155,7 +154,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                             *stop = YES;
                             return;
                         }
-                        NSLog(@"%@---%@",indexFrom,indexTo);
+                        NSLog(@"%@---%@",[self formatIndexPath:indexFrom],[self formatIndexPath:indexTo]);
                         [_gridView moveItemAtIndexPath:indexFrom toIndexPath:indexTo];
                         indextemp = indexTo;
                         /**
@@ -212,6 +211,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             indexOrg = nil;
             indextemp = nil;
             indexBegin = nil;
+            fakeCell = nil;
             [_gridView reloadData];
         }
             break;
