@@ -110,10 +110,10 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             break;
         case UIGestureRecognizerStateChanged:
         {
-            NSIndexPath *indexPp = nil;
+            NSIndexPath *indexFrom = nil;
             ImageGridCell *moveView = ((ImageGridCell *)lo.view);
             if (lo.view.superview != self.view) {
-                 indexPp = [_gridView indexPathForCell:moveView];
+                 indexFrom = [_gridView indexPathForCell:moveView];
                 if (!fakeCell) {
                     fakeCell = [[ImageGridCell alloc] initWithFrame:moveView.frame];
                     fakeCell.image.image = moveView.image.image;
@@ -132,23 +132,32 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                     }
                     CGRect rect =  [self.view convertRect:obj.frame toView:self.view];
                     if (CGRectContainsPoint(rect, lo.view.center)) {
-                        NSIndexPath *indexP = [_gridView indexPathForCell:obj];
-                        if (indexP.section == indexOrg.section) {
+                        NSIndexPath *indexTo = [_gridView indexPathForCell:obj];
+                        if (indexTo.section == indexOrg.section) {
+                            
+                            
                             
                         }else{
                             self.imagesArrayOrg = [self.imagesArray copy];
                             NSMutableArray *mut = [NSMutableArray arrayWithArray:[self.imagesArray objectAtIndex:indexOrg.section]];
-                            [mut removeLastObject];
+                            id abc = [mut objectAtIndex:indexOrg.row];
+                            [mut removeObjectAtIndex:indexOrg.row];
                             
+                            NSMutableArray *mu2t = [NSMutableArray arrayWithArray:[self.imagesArray objectAtIndex:indexTo.section]];
+                            [mu2t addObject:abc];
+//                            self.imagesArray = [NSMutableArray arrayWithArray:@[mu2t,mut]];
+                            self.imagesArray = [NSMutableArray arrayWithObjects:@"",@"", nil];
                             [self.imagesArray replaceObjectAtIndex:indexOrg.section withObject:mut];
-                            NSMutableArray *mu2t = [NSMutableArray arrayWithArray:[self.imagesArray objectAtIndex:indexP.section]];
-                            [mu2t addObject:@"30.JPG"];
-                            self.imagesArray = [NSMutableArray arrayWithArray:@[mut,mu2t]];
+                            [self.imagesArray replaceObjectAtIndex:indexTo.section withObject:mu2t];
+
                         }
-                        if (indextemp != nil && [indextemp compare:indexP]==NSOrderedSame) {
+                        if (indextemp != nil && [indextemp compare:indexTo]==NSOrderedSame) {
                             *stop = YES;
                             return;
                         }
+                        NSLog(@"%@---%@",indexFrom,indexTo);
+                        [_gridView moveItemAtIndexPath:indexFrom toIndexPath:indexTo];
+                        indextemp = indexTo;
                         /**
                         static int a= 1;
                         if (a ==1) {
@@ -164,10 +173,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                         */
 
                         
-                        [_gridView moveItemAtIndexPath:indexPp toIndexPath:indexP];
-                        
-                        
-                        indextemp = indexP;
+
                         
                     }
                     
@@ -193,13 +199,19 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                 NSMutableArray *mut = [NSMutableArray arrayWithArray:[self.imagesArrayOrg objectAtIndex:indexOrg.section]];
                 NSMutableArray *mut2 = [NSMutableArray arrayWithArray:[self.imagesArrayOrg objectAtIndex:indextemp.section]];
                 NSLog(@"%@",mut);
-                NSLog(@"%d",indexOrg.row);
-                NSLog(@"%d",indextemp.row);
+                NSLog(@"%ld",(long)indexOrg.row);
+                NSLog(@"%ld",(long)indextemp.row);
 
                 [mut2 insertObject:[mut objectAtIndex:indexOrg.row] atIndex:indextemp.row];
                 [mut removeObjectAtIndex:indexOrg.row];
-                self.imagesArray = [NSMutableArray arrayWithArray:@[mut,mut2]];
+                
+                self.imagesArray = [NSMutableArray arrayWithObjects:@"",@"", nil];
+                [self.imagesArray replaceObjectAtIndex:indexOrg.section withObject:mut];
+                [self.imagesArray replaceObjectAtIndex:indextemp.section withObject:mut2];
             }
+            indexOrg = nil;
+            indextemp = nil;
+            indexBegin = nil;
             [_gridView reloadData];
         }
             break;
@@ -223,7 +235,9 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 }
 
 - (NSInteger)collectionView:(PSUICollectionView *)view numberOfItemsInSection:(NSInteger)section {
-    return [self.imagesArray[section] count];
+    NSInteger ret = [self.imagesArray[section] count];
+    NSLog(@"ret+:%ld",(long)ret);
+    return ret;
 }
 
 
@@ -272,6 +286,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 - (void)collectionView:(PSTCollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"Delegate cell %@ : SELECTED", [self formatIndexPath:indexPath]);
+    return;
     if (indexPath.section == 0) {
         sectionNumbers0 --;
         sectionNumbers1 ++;

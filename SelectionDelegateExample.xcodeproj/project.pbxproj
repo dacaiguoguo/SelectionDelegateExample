@@ -102,6 +102,8 @@
 		9D342F7719AB48B900751CF5 /* 7.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9D342F3219AB48B900751CF5 /* 7.JPG */; };
 		9D342F7819AB48B900751CF5 /* 8.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9D342F3319AB48B900751CF5 /* 8.JPG */; };
 		9D342F7919AB48B900751CF5 /* 9.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9D342F3419AB48B900751CF5 /* 9.JPG */; };
+		9D342F7B19AB58AB00751CF5 /* poi.json in Resources */ = {isa = PBXBuildFile; fileRef = 9D342F7A19AB58AB00751CF5 /* poi.json */; };
+		9D342F7D19AB5AD800751CF5 /* cyjpois.json in Resources */ = {isa = PBXBuildFile; fileRef = 9D342F7C19AB5AD800751CF5 /* cyjpois.json */; };
 		9D780C8519AB0B7400A7EB8A /* HeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D780C8219AB0B7400A7EB8A /* HeaderView.m */; };
 		9D780C8619AB0B7400A7EB8A /* FooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D780C8419AB0B7400A7EB8A /* FooterView.m */; };
 		9D780C8B19AB378700A7EB8A /* NSMutableArray+convenience.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D780C8A19AB378700A7EB8A /* NSMutableArray+convenience.m */; };
@@ -225,6 +227,8 @@
 		9D342F3219AB48B900751CF5 /* 7.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 7.JPG; sourceTree = "<group>"; };
 		9D342F3319AB48B900751CF5 /* 8.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 8.JPG; sourceTree = "<group>"; };
 		9D342F3419AB48B900751CF5 /* 9.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 9.JPG; sourceTree = "<group>"; };
+		9D342F7A19AB58AB00751CF5 /* poi.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = poi.json; sourceTree = "<group>"; };
+		9D342F7C19AB5AD800751CF5 /* cyjpois.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = cyjpois.json; sourceTree = "<group>"; };
 		9D780C8119AB0B7400A7EB8A /* HeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HeaderView.h; sourceTree = "<group>"; };
 		9D780C8219AB0B7400A7EB8A /* HeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HeaderView.m; sourceTree = "<group>"; };
 		9D780C8319AB0B7400A7EB8A /* FooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FooterView.h; sourceTree = "<group>"; };
@@ -279,20 +283,22 @@
 		60FF9BD41648B86200E20CD4 /* SelectionDelegateExample */ = {
 			isa = PBXGroup;
 			children = (
-				9D342EED19AB48B900751CF5 /* images */,
-				9D342EC319AB487800751CF5 /* PSTCollectionView */,
 				60FF9BDD1648B86200E20CD4 /* AppDelegate.h */,
 				60FF9BDE1648B86200E20CD4 /* AppDelegate.m */,
 				60FF9BE61648B86200E20CD4 /* ViewController.h */,
 				60FF9BE71648B86200E20CD4 /* ViewController.m */,
 				9D780C8319AB0B7400A7EB8A /* FooterView.h */,
 				9D780C8419AB0B7400A7EB8A /* FooterView.m */,
-				9D780C8919AB378700A7EB8A /* NSMutableArray+convenience.h */,
-				9D780C8A19AB378700A7EB8A /* NSMutableArray+convenience.m */,
 				9D780C8119AB0B7400A7EB8A /* HeaderView.h */,
 				9D780C8219AB0B7400A7EB8A /* HeaderView.m */,
 				60FF9C7B1648BE6100E20CD4 /* ImageGridCell.h */,
 				60FF9C7C1648BE6100E20CD4 /* ImageGridCell.m */,
+				9D780C8919AB378700A7EB8A /* NSMutableArray+convenience.h */,
+				9D780C8A19AB378700A7EB8A /* NSMutableArray+convenience.m */,
+				9D342F7A19AB58AB00751CF5 /* poi.json */,
+				9D342F7C19AB5AD800751CF5 /* cyjpois.json */,
+				9D342EED19AB48B900751CF5 /* images */,
+				9D342EC319AB487800751CF5 /* PSTCollectionView */,
 				60FF9BD51648B86200E20CD4 /* Supporting Files */,
 				33C7743716D60E01005CB224 /* UILabel+Highlight.h */,
 				33C7743816D60E01005CB224 /* UILabel+Highlight.m */,
@@ -513,6 +519,7 @@
 				9D342F4219AB48B900751CF5 /* 17_full.JPG in Resources */,
 				9D342F6119AB48B900751CF5 /* 15.JPG in Resources */,
 				9D342F6519AB48B900751CF5 /* 19.JPG in Resources */,
+				9D342F7D19AB5AD800751CF5 /* cyjpois.json in Resources */,
 				9D342F4619AB48B900751CF5 /* 20_full.JPG in Resources */,
 				9D342F5419AB48B900751CF5 /* 4_full.JPG in Resources */,
 				9D342F7119AB48B900751CF5 /* 3.JPG in Resources */,
@@ -530,6 +537,7 @@
 				9D342F5119AB48B900751CF5 /* 30_full.JPG in Resources */,
 				9D342F4919AB48B900751CF5 /* 23_full.JPG in Resources */,
 				9D342F7319AB48B900751CF5 /* 31.JPG in Resources */,
+				9D342F7B19AB58AB00751CF5 /* poi.json in Resources */,
 				9D342F5719AB48B900751CF5 /* 7_full.JPG in Resources */,
 				9D342F5619AB48B900751CF5 /* 6_full.JPG in Resources */,
 				9D342F5219AB48B900751CF5 /* 31_full.JPG in Resources */,
