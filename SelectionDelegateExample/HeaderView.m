@@ -13,8 +13,7 @@
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-        NSUInteger uii = (((NSUInteger)self >> 4) % 256);
-        CGFloat hue = uii / 255.0;
+        CGFloat hue = 69./255.;
         UIColor *color = [UIColor colorWithHue:hue saturation:1.0 brightness:1.0 alpha:1.0];
 		[self setBackgroundColor:color];
 	}
