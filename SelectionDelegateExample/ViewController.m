@@ -127,10 +127,6 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             break;
         case UIGestureRecognizerStateBegan:
         {
-        }
-            break;
-        case UIGestureRecognizerStateChanged:
-        {
             if (self.movParams.fakeCell == nil) {
                 if (self.movParams.originalCell == nil) {
                     self.movParams.originalCell = ((ImageGridCell *)lo.view);
@@ -140,10 +136,16 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                     self.movParams.fakeCell.image.image = self.movParams.originalCell.image.image;
                     self.movParams.fakeCell.layer.borderWidth = 3;
                     self.movParams.fakeCell.layer.borderColor = [[UIColor redColor] CGColor];
+                    self.movParams.fakeCell.transform = CGAffineTransformMakeScale(1.2, 1.2);
                     [_gridView addSubview:self.movParams.fakeCell];
                 }
             }
             
+        }
+            break;
+        case UIGestureRecognizerStateChanged:
+        {
+
             
             _latestTouchPoint = [lo locationInView:_gridView];
             [self maybeAutoscrollForFakeView:self.movParams.fakeCell];
