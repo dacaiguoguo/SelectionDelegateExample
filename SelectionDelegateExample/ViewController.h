@@ -10,6 +10,8 @@
 #import "PSTCollectionView.h"
 #import "ImageGridCell.h"
 
+const static CGFloat kAutoScrollingThreshold = 60;
+
 @interface MoveParams : NSObject
 @property (nonatomic, strong) ImageGridCell *fakeCell;
 @property (nonatomic, strong) ImageGridCell *originalCell;

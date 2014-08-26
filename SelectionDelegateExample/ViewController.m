@@ -24,6 +24,9 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 
 @interface ViewController (){
     PSUICollectionView *_gridView;
+    CGFloat autoscrollDistance;
+    NSTimer *_autoscrollTimer;
+    CGPoint _latestTouchPoint;
 }
 @property (nonatomic, strong) NSMutableArray *imagesArray;
 @property (nonatomic, strong) NSMutableArray *imagesArrayOrg;
@@ -42,17 +45,22 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
     NSMutableArray *mut1 = [NSMutableArray array];
     NSMutableArray *mut2 = [NSMutableArray array];
     NSMutableArray *mut3 = [NSMutableArray array];
-
+    NSMutableArray *mut4 = [NSMutableArray array];
+    NSMutableArray *mut5 = [NSMutableArray array];
+    
     for (int i=0; i<7; i++) {
         [mut1 addObject:[NSString stringWithFormat:@"%d.JPG", i]];
         [mut2 addObject:[NSString stringWithFormat:@"1%d.JPG", i]];
         [mut3 addObject:[NSString stringWithFormat:@"2%d.JPG", i]];
-
+        [mut4 addObject:[NSString stringWithFormat:@"2%d.JPG", i]];
+        [mut5 addObject:[NSString stringWithFormat:@"2%d.JPG", i]];
+        
     }
     [self.imagesArray addObject:mut1];
-    [mut2 removeAllObjects];
     [self.imagesArray addObject:mut2];
     [self.imagesArray addObject:mut3];
+    [self.imagesArray addObject:mut4];
+    [self.imagesArray addObject:mut5];
     [self createGridView];
     
     UIBarButtonItem *toggleMultiSelectButton = [[UIBarButtonItem alloc] initWithTitle:@"Multi-Select" style:UIBarButtonItemStylePlain target:self action:@selector(toggleAllowsMultipleSelection:)];
@@ -123,6 +131,11 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                     [_gridView addSubview:self.movParams.fakeCell];
                 }
             }
+            
+            
+            _latestTouchPoint = [lo locationInView:_gridView];
+            [self maybeAutoscrollForFakeView:self.movParams.fakeCell];
+            
             self.movParams.fakeCell.center = [lo locationInView:lo.view.superview];
             self.movParams.originalCell.alpha = 0;
             
@@ -156,6 +169,10 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             break;
         case UIGestureRecognizerStateEnded:
         {
+            if(_autoscrollTimer)
+            {
+                [_autoscrollTimer invalidate]; _autoscrollTimer = nil;
+            }
             self.movParams.originalCell.alpha = 1.;
             [self.movParams.fakeCell removeFromSuperview];
             self.movParams.originalCell = nil;
@@ -321,5 +338,68 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return YES;
 }
+
+#pragma mark -
+#pragma mark Autoscrolling methods
+- (void)maybeAutoscrollForFakeView:(ImageGridCell *)fakeView
+{
+    autoscrollDistance = 0;
+    if (CGRectGetMaxY(fakeView.frame) < _gridView.contentSize.height )
+    {
+        // only autoscroll if the content is larger than the view
+        if (_gridView.contentSize.height > _gridView.frame.size.height)
+        {
+            // only autoscroll if the thumb is overlapping the thumbScrollView
+            if (CGRectIntersectsRect([fakeView frame], [_gridView bounds]))
+            {
+                float distanceFromTop = _latestTouchPoint.y - CGRectGetMinY(_gridView.bounds);
+                float distanceFromBottom = CGRectGetMaxY(_gridView.bounds) - _latestTouchPoint.y;
+                
+                if (distanceFromTop < kAutoScrollingThreshold) {
+                    autoscrollDistance = [self autoscrollDistanceForProximityToEdge:distanceFromTop] * -1; // if scrolling up, distance is negative
+                } else if (distanceFromBottom < kAutoScrollingThreshold) {
+                    autoscrollDistance = [self autoscrollDistanceForProximityToEdge:distanceFromBottom];
+                }
+            }
+        }
+    }
+    
+    if (autoscrollDistance == 0) {
+        [_autoscrollTimer invalidate];
+        _autoscrollTimer = nil;
+    }
+    else if (_autoscrollTimer == nil) {
+        _autoscrollTimer = [NSTimer scheduledTimerWithTimeInterval:(1.0 / 60.0)
+                                                            target:self
+                                                          selector:@selector(autoscrollTimerFired:)
+                                                          userInfo:fakeView
+                                                           repeats:YES];
+        [[NSRunLoop currentRunLoop]addTimer:_autoscrollTimer forMode:NSRunLoopCommonModes];
+    }
+}
+
+- (float)autoscrollDistanceForProximityToEdge:(float)proximity {
+    // the scroll distance grows as the proximity to the edge decreases, so that moving the thumb
+    // further over results in faster scrolling.
+    return ceilf((kAutoScrollingThreshold - proximity) / 5.0);
+}
+
+- (void)legalizeAutoscrollDistance {
+    float minimumLegalDistance = ([_gridView contentOffset].y + _gridView.contentInset.top) * -1;
+    float maximumLegalDistance = [_gridView contentSize].height - ([_gridView frame].size.height + [_gridView contentOffset].y);
+    autoscrollDistance = MAX(autoscrollDistance, minimumLegalDistance);
+    autoscrollDistance = MIN(autoscrollDistance, maximumLegalDistance);
+}
+
+- (void)autoscrollTimerFired:(NSTimer*)timer {
+    NSLog(@"autoscrolling: %.2f",autoscrollDistance);
+    [self legalizeAutoscrollDistance];
+    CGPoint contentOffset = [_gridView contentOffset];
+    contentOffset.y += autoscrollDistance;
+    [_gridView setContentOffset:contentOffset];
+    _movParams.fakeCell.center = CGPointMake(_movParams.fakeCell.center.x, _movParams.fakeCell.center.y + autoscrollDistance);
+}
+
+
 
 @end
