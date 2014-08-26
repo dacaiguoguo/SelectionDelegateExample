@@ -16,7 +16,7 @@
 
 
 #ifdef DEBUG
-#define LVLog(format, ...) NSLog(format, ## __VA_ARGS__)
+#define LVLog(format, ...) //NSLog(format, ## __VA_ARGS__)
 #else
 #define LVLog(format, ...) //NSLog(format, ## __VA_ARGS__)
 #endif

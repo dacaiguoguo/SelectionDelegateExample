@@ -159,13 +159,17 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                 return;
             }
             [self.headerIndexViewDic enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *key, UIView *obj, BOOL *stop) {
-                if ([[self.imagesArray objectAtIndex:key.section] count] == 0 ) {
-                    LVLog(@"dacaiguoguo:\n%d",__LINE__);
-
-                    self.movParams.indexToCover = [NSIndexPath indexPathForRow:0 inSection:key.section];
-                    [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
+                
+                if (CGRectContainsPoint(obj.frame, self.movParams.fakeCell.center)) {
+                    if ([[self.imagesArray objectAtIndex:key.section] count] == 0 ) {
+                        LVLog(@"dacaiguoguo:\n%d",__LINE__);
+                        
+                        self.movParams.indexToCover = [NSIndexPath indexPathForRow:0 inSection:key.section];
+                        [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
+                    }
+                    return ;
                 }
-                return ;
+ 
             }];
             
             for (ImageGridCell* obj in _gridView.visibleCells) {
@@ -281,8 +285,8 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
     
    PSTCollectionViewLayoutAttributes* boj =  [_gridView layoutAttributesForSupplementaryElementOfKind:kind atIndexPath:indexPath];
 
-    NSLog(@"%@",NSStringFromCGRect(boj.frame));
-    NSLog(@"%@",NSStringFromCGRect(supplementaryView.frame));
+    LVLog(@"%@",NSStringFromCGRect(boj.frame));
+    LVLog(@"%@",NSStringFromCGRect(supplementaryView.frame));
     
     if ([kind isEqualToString:PSTCollectionElementKindSectionFooter]) {
         [self.headerIndexViewDic setObject:supplementaryView forKey:indexPath];
@@ -411,7 +415,6 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 }
 
 - (void)autoscrollTimerFired:(NSTimer*)timer {
-    NSLog(@"autoscrolling: %.2f",autoscrollDistance);
     [self legalizeAutoscrollDistance];
     CGPoint contentOffset = [_gridView contentOffset];
     contentOffset.y += autoscrollDistance;
