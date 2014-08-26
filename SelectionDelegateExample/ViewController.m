@@ -27,6 +27,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 }
 @property (nonatomic, strong) NSMutableArray *imagesArray;
 @property (nonatomic, strong) NSMutableArray *imagesArrayOrg;
+@property (nonatomic, strong) NSMutableDictionary *headerIndexViewDic;
 @property (nonatomic, strong) MoveParams *movParams;
 
 @end
@@ -37,6 +38,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
     [super viewDidLoad];
     self.movParams = [[MoveParams alloc] init];
     self.imagesArray = [NSMutableArray array];
+    self.headerIndexViewDic = [NSMutableDictionary dictionary];
     NSMutableArray *mut1 = [NSMutableArray array];
     NSMutableArray *mut2 = [NSMutableArray array];
     NSMutableArray *mut3 = [NSMutableArray array];
@@ -48,6 +50,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 
     }
     [self.imagesArray addObject:mut1];
+    [mut2 removeAllObjects];
     [self.imagesArray addObject:mut2];
     [self.imagesArray addObject:mut3];
     [self createGridView];
@@ -122,12 +125,22 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             }
             self.movParams.fakeCell.center = [lo locationInView:lo.view.superview];
             self.movParams.originalCell.alpha = 0;
+            
+
+            [self.headerIndexViewDic enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *key, UIView *obj, BOOL *stop) {
+                if ([[self.imagesArray objectAtIndex:key.section] count] == 0 ) {
+                    self.movParams.indexToCover = [NSIndexPath indexPathForRow:0 inSection:key.section];
+                    [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
+                }
+                return ;
+            }];
             [_gridView.visibleCells enumerateObjectsUsingBlock:^(ImageGridCell* obj, NSUInteger idx, BOOL *stop) {
                 if (obj == self.movParams.originalCell) {
                     return ;
                 }
                 
                 CGRect rect =  obj.frame;
+                
                 if (CGRectContainsPoint(rect, self.movParams.fakeCell.center)) {
                     self.movParams.indexToCover = [_gridView indexPathForCell:obj];
                     if (self.movParams.indexToMove != nil && [self.movParams.indexToCover compare:self.movParams.indexToMove]==NSOrderedSame) {
@@ -135,19 +148,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                         *stop = YES;
                         return;
                     }
-                    
-                    if (self.movParams.indexToCover.section == self.movParams.indexSelected.section ) {
-                        LVLog(@"dacaiguoguo:\n%s\n%d",__func__,__LINE__);
-                        
-                    }else{
-                        LVLog(@"dacaiguoguo:\n%s\n%d",__func__,__LINE__);
-                    }
                     [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
-                    [_gridView moveItemAtIndexPath:self.movParams.indexToMove toIndexPath:self.movParams.indexToCover];
-                    LVLog(@"%@---%@",[self formatIndexPath:self.movParams.indexToMove],[self formatIndexPath:self.movParams.indexToCover]);
-                    self.movParams.indexToMove = self.movParams.indexToCover;
-                    self.movParams.indexSelected = self.movParams.indexToCover;
-
                 }
                 
             }];
@@ -197,6 +198,11 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
         NSMutableArray *mu2t = [self.imagesArray objectAtIndex:indexToCo.section];
         [mu2t insertObject:abc atIndex:indexToCo.row];
     }
+    
+    [_gridView moveItemAtIndexPath:self.movParams.indexToMove toIndexPath:self.movParams.indexToCover];
+    LVLog(@"%@---%@",[self formatIndexPath:self.movParams.indexToMove],[self formatIndexPath:self.movParams.indexToCover]);
+    self.movParams.indexToMove = self.movParams.indexToCover;
+    self.movParams.indexSelected = self.movParams.indexToCover;
 }
 
 
@@ -237,16 +243,25 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 	}
     PSUICollectionReusableView *supplementaryView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:identifier forIndexPath:indexPath];
     
+   PSTCollectionViewLayoutAttributes* boj =  [_gridView layoutAttributesForSupplementaryElementOfKind:kind atIndexPath:indexPath];
+
+    NSLog(@"%@",NSStringFromCGRect(boj.frame));
+    NSLog(@"%@",NSStringFromCGRect(supplementaryView.frame));
+    
+    if ([kind isEqualToString:PSTCollectionElementKindSectionFooter]) {
+        [self.headerIndexViewDic setObject:supplementaryView forKey:indexPath];
+    }
+    
     // TODO Setup view
     
     return supplementaryView;
 }
 
--(CGSize) collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+-(CGSize) collectionView:(PSTCollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     return CGSizeMake(60.0f, 30.0f);
 }
 
--(CGSize) collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+-(CGSize) collectionView:(PSTCollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
     return CGSizeMake(60.0f, 30.0f);
 }
 
@@ -278,16 +293,18 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
     //    LVLog(@"Delegate cell %@ : DESELECTED", [self formatIndexPath:indexPath]);
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL)collectionView:(PSTCollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
     self.movParams.indexSelected = indexPath;
     self.movParams.indexToMove = self.movParams.indexSelected;
     LVLog(@"%@",[self formatIndexPath:self.movParams.indexToMove]);
+    
+    
     //    LVLog(@"Check delegate: should cell %@ highlight?", [self formatIndexPath:indexPath]);
     return YES;
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL)collectionView:(PSTCollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 
 
@@ -295,7 +312,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
     return YES;
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL)collectionView:(PSTCollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     //    LVLog(@"Check delegate: should cell %@ be deselected?", [self formatIndexPath:indexPath]);
     return YES;
