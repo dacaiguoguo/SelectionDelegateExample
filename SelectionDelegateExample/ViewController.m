@@ -146,6 +146,8 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                     [_gridView moveItemAtIndexPath:self.movParams.indexToMove toIndexPath:self.movParams.indexToCover];
                     NSLog(@"%@---%@",[self formatIndexPath:self.movParams.indexToMove],[self formatIndexPath:self.movParams.indexToCover]);
                     self.movParams.indexToMove = self.movParams.indexToCover;
+                    self.movParams.indexSelected = self.movParams.indexToCover;
+
                 }
                 
             }];
@@ -153,7 +155,6 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             break;
         case UIGestureRecognizerStateEnded:
         {
-//            [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
             self.movParams.originalCell.alpha = 1.;
             [self.movParams.fakeCell removeFromSuperview];
             self.movParams.originalCell = nil;
