@@ -39,13 +39,17 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
     self.imagesArray = [NSMutableArray array];
     NSMutableArray *mut1 = [NSMutableArray array];
     NSMutableArray *mut2 = [NSMutableArray array];
+    NSMutableArray *mut3 = [NSMutableArray array];
+
     for (int i=0; i<7; i++) {
         [mut1 addObject:[NSString stringWithFormat:@"%d.JPG", i]];
-        [mut2 addObject:[NSString stringWithFormat:@"2%d.JPG", i]];
+        [mut2 addObject:[NSString stringWithFormat:@"1%d.JPG", i]];
+        [mut3 addObject:[NSString stringWithFormat:@"2%d.JPG", i]];
+
     }
     [self.imagesArray addObject:mut1];
     [self.imagesArray addObject:mut2];
-    
+    [self.imagesArray addObject:mut3];
     [self createGridView];
     
     UIBarButtonItem *toggleMultiSelectButton = [[UIBarButtonItem alloc] initWithTitle:@"Multi-Select" style:UIBarButtonItemStylePlain target:self action:@selector(toggleAllowsMultipleSelection:)];
@@ -114,9 +118,6 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                     [_gridView addSubview:self.movParams.fakeCell];
                 }
             }
-            
-            
-            NSLog(@"%d",__LINE__);
             self.movParams.fakeCell.center = [lo locationInView:lo.view.superview];
             self.movParams.originalCell.alpha = 0;
             [_gridView.visibleCells enumerateObjectsUsingBlock:^(ImageGridCell* obj, NSUInteger idx, BOOL *stop) {
@@ -127,8 +128,8 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                 CGRect rect =  obj.frame;
                 if (CGRectContainsPoint(rect, self.movParams.fakeCell.center)) {
                     self.movParams.indexToCover = [_gridView indexPathForCell:obj];
-                    NSLog(@"222:%@---%@",[self formatIndexPath:self.movParams.indexToMove],[self formatIndexPath:self.movParams.indexToCover]);
                     if (self.movParams.indexToMove != nil && [self.movParams.indexToCover compare:self.movParams.indexToMove]==NSOrderedSame) {
+                        NSLog(@"*stop:%@",@"YES");
                         *stop = YES;
                         return;
                     }
@@ -138,43 +139,9 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                         
                     }else{
                         NSLog(@"dacaiguoguo:\n%s\n%d",__func__,__LINE__);
-                        //这里反了。从原到新，对的，原到新再新到原时，数据处理反了。相当于cancel上一次数据操作。
-                        if (1 ==0) {
-                            //                            isChangeSection = YES;
-                            self.imagesArrayOrg = [self.imagesArray copy];
-                            NSMutableArray *mut = [NSMutableArray arrayWithArray:[self.imagesArray objectAtIndex:self.movParams.indexSelected.section]];
-                            id abc = [mut objectAtIndex:self.movParams.indexSelected.row];
-                            [mut removeObjectAtIndex:self.movParams.indexSelected.row];
-                            
-                            NSMutableArray *mu2t = [NSMutableArray arrayWithArray:[self.imagesArray objectAtIndex:self.movParams.indexToCover.section]];
-                            [mu2t addObject:abc];
-                            self.imagesArray = [NSMutableArray arrayWithObjects:@"",@"", nil];
-                            [self.imagesArray replaceObjectAtIndex:self.movParams.indexSelected.section withObject:mut];
-                            [self.imagesArray replaceObjectAtIndex:self.movParams.indexToMove.section withObject:mu2t];
-                            
-                        }else{
-                            //                            isChangeSection = YES;
-                            
-                            //
-                            //                                NSIndexPath *temo = indexOrg;
-                            //                                indexOrg = indexTo;
-                            //                                indexTo = temo;
-                            //                                self.imagesArrayOrg = [self.imagesArray copy];
-                            //                                NSMutableArray *mut = [NSMutableArray arrayWithArray:[self.imagesArray objectAtIndex:indexOrg.section]];
-                            //                                id abc = [mut objectAtIndex:indexOrg.row];
-                            //                                [mut removeObjectAtIndex:indexOrg.row];
-                            //
-                            //                                NSMutableArray *mu2t = [NSMutableArray arrayWithArray:[self.imagesArray objectAtIndex:indexTo.section]];
-                            //                                [mu2t addObject:abc];
-                            //                                //                            self.imagesArray = [NSMutableArray arrayWithArray:@[mu2t,mut]];
-                            //                                self.imagesArray = [NSMutableArray arrayWithObjects:@"",@"", nil];
-                            //                                [self.imagesArray replaceObjectAtIndex:indexOrg.section withObject:mut];
-                            //                                [self.imagesArray replaceObjectAtIndex:indexTo.section withObject:mu2t];
-                        }
-                        //要修正indexOrg 和 to
                         
-                        
-                        
+                        self.imagesArrayOrg = [self.imagesArray copy];
+                        [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
                     }
                     
                     [_gridView moveItemAtIndexPath:self.movParams.indexToMove toIndexPath:self.movParams.indexToCover];
@@ -183,37 +150,11 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                 }
                 
             }];
-            //            if (self.movParams.indexToMove != nil && [self.movParams.indexToMove compare:self.movParams.indexToCover]==NSOrderedSame) {
-            //
-            //            }
-            //            else
-            //            {
-            //                NSLog(@"%d",__LINE__);
-            //                self.movParams.indexToMove = self.movParams.indexToCover;
-            //            }
         }
             break;
         case UIGestureRecognizerStateEnded:
         {
-            if (self.movParams.indexSelected.section == self.movParams.indexToCover.section) {
-                NSMutableArray *mut = [NSMutableArray arrayWithArray:[self.imagesArray objectAtIndex:self.movParams.indexSelected.section]];
-                [mut moveObjectFromIndex:self.movParams.indexSelected.row toIndex:self.movParams.indexToCover.row];
-                [self.imagesArray replaceObjectAtIndex:self.movParams.indexSelected.section withObject:mut];
-                
-            }else{
-                NSMutableArray *mut = [NSMutableArray arrayWithArray:[self.imagesArrayOrg objectAtIndex:self.movParams.indexSelected.section]];
-                NSMutableArray *mut2 = [NSMutableArray arrayWithArray:[self.imagesArrayOrg objectAtIndex:self.movParams.indexToCover.section]];
-                NSLog(@"%@",mut);
-                NSLog(@"%ld",(long)self.movParams.indexSelected.row);
-                NSLog(@"%ld",(long)self.movParams.indexToCover.row);
-                
-                [mut2 insertObject:[mut objectAtIndex:self.movParams.indexSelected.row] atIndex:self.movParams.indexToCover.row];
-                [mut removeObjectAtIndex:self.movParams.indexSelected.row];
-                
-                self.imagesArray = [NSMutableArray arrayWithObjects:@"",@"", nil];
-                [self.imagesArray replaceObjectAtIndex:self.movParams.indexSelected.section withObject:mut];
-                [self.imagesArray replaceObjectAtIndex:self.movParams.indexToCover.section withObject:mut2];
-            }
+//            [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
             self.movParams.originalCell.alpha = 1.;
             [self.movParams.fakeCell removeFromSuperview];
             self.movParams.originalCell = nil;
@@ -238,6 +179,26 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
     }
     
 }
+
+- (void)resetImagesArrayWithOrgIndex:(NSIndexPath *)indOrg toCoverIndex:(NSIndexPath *)indexToCo
+{
+    if (indOrg.section == indexToCo.section) {
+        NSMutableArray *mut = [self.imagesArray objectAtIndex:indOrg.section];
+        [mut moveObjectFromIndex:indOrg.row toIndex:indexToCo.row];
+        
+    }else{
+        NSLog(@"%ld",(long)indOrg.row);
+        NSLog(@"%ld",(long)indexToCo.row);
+        NSMutableArray *mutSelect = [self.imagesArray objectAtIndex:indOrg.section];
+        NSLog(@"%@",mutSelect);
+
+        id abc = [mutSelect objectAtIndex:indOrg.row];
+        [mutSelect removeObjectAtIndex:indOrg.row];
+        NSMutableArray *mu2t = [self.imagesArray objectAtIndex:indexToCo.section];
+        [mu2t insertObject:abc atIndex:indexToCo.row];
+    }
+}
+
 
 - (void)longPress:(UILongPressGestureRecognizer *)lo
 {
