@@ -108,8 +108,10 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             break;
         case UIGestureRecognizerStateChanged:
         {
-            if (self.movParams.originalCell == nil) {
-                self.movParams.originalCell = ((ImageGridCell *)lo.view);
+            if (self.movParams.fakeCell == nil) {
+                if (self.movParams.originalCell == nil) {
+                    self.movParams.originalCell = ((ImageGridCell *)lo.view);
+                }
                 if (!self.movParams.fakeCell) {
                     self.movParams.fakeCell = [[ImageGridCell alloc] initWithFrame:self.movParams.originalCell.frame];
                     self.movParams.fakeCell.image.image = self.movParams.originalCell.image.image;
@@ -139,11 +141,8 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                         
                     }else{
                         NSLog(@"dacaiguoguo:\n%s\n%d",__func__,__LINE__);
-                        
-                        self.imagesArrayOrg = [self.imagesArray copy];
-                        [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
                     }
-                    
+                    [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
                     [_gridView moveItemAtIndexPath:self.movParams.indexToMove toIndexPath:self.movParams.indexToCover];
                     NSLog(@"%@---%@",[self formatIndexPath:self.movParams.indexToMove],[self formatIndexPath:self.movParams.indexToCover]);
                     self.movParams.indexToMove = self.movParams.indexToCover;
