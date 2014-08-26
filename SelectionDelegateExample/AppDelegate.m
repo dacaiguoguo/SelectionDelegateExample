@@ -15,6 +15,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     ViewController *viewController = [[ViewController alloc] init];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     self.viewController = [[UINavigationController alloc] initWithRootViewController:viewController];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
