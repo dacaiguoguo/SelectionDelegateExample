@@ -43,12 +43,12 @@ static CGFloat SubTitleLabelHeight = 24;
 
 - (void)setHighlighted:(BOOL)highlighted {
 //    LVLog(@"Cell %@ highlight: %@", _label.text, highlighted ? @"ON" : @"OFF");
-//    if (highlighted) {
-//        _label.backgroundColor = [UIColor yellowColor];
-//    }
-//    else {
-//        _label.backgroundColor = [UIColor underPageBackgroundColor];
-//    }
+    if (highlighted) {
+        _label.backgroundColor = [UIColor yellowColor];
+    }
+    else {
+        _label.backgroundColor = [UIColor underPageBackgroundColor];
+    }
 }
 
 @end

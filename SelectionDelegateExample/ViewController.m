@@ -13,6 +13,17 @@
 
 
 @implementation MoveParams
+@dynamic isMoving;
+
+- (void)setIsMoving:(BOOL)isMovinga{
+    _isMoving = isMovinga;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        _isMoving = NO;
+    });
+}
+- (BOOL)isMoving{
+    return _isMoving;
+}
 
 @end
 
@@ -56,6 +67,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
         [mut5 addObject:[NSString stringWithFormat:@"2%d.JPG", i]];
         
     }
+    [mut2 removeAllObjects];
     [self.imagesArray addObject:mut1];
     [self.imagesArray addObject:mut2];
     [self.imagesArray addObject:mut3];
@@ -137,34 +149,38 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             [self maybeAutoscrollForFakeView:self.movParams.fakeCell];
             
             self.movParams.fakeCell.center = [lo locationInView:lo.view.superview];
-            self.movParams.originalCell.alpha = 0;
+            self.movParams.originalCell.alpha = .0;
+            self.movParams.originalCell.hidden = YES;
             
-
+            if (self.movParams.isMoving) {
+                LVLog(@"*stopbreak:%@",@"YES");
+                return;
+            }
             [self.headerIndexViewDic enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *key, UIView *obj, BOOL *stop) {
                 if ([[self.imagesArray objectAtIndex:key.section] count] == 0 ) {
+                    LVLog(@"dacaiguoguo:\n%d",__LINE__);
+
                     self.movParams.indexToCover = [NSIndexPath indexPathForRow:0 inSection:key.section];
                     [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
                 }
                 return ;
             }];
-            [_gridView.visibleCells enumerateObjectsUsingBlock:^(ImageGridCell* obj, NSUInteger idx, BOOL *stop) {
+            
+            for (ImageGridCell* obj in _gridView.visibleCells) {
                 if (obj == self.movParams.originalCell) {
-                    return ;
+                    continue;
                 }
                 
                 CGRect rect =  obj.frame;
-                
                 if (CGRectContainsPoint(rect, self.movParams.fakeCell.center)) {
                     self.movParams.indexToCover = [_gridView indexPathForCell:obj];
-                    if (self.movParams.indexToMove != nil && [self.movParams.indexToCover compare:self.movParams.indexToMove]==NSOrderedSame) {
-                        LVLog(@"*stop:%@",@"YES");
-                        *stop = YES;
-                        return;
-                    }
+                    LVLog(@"%@---%@",[self formatIndexPath:self.movParams.indexToCover],[self formatIndexPath:self.movParams.indexToMove]);
+                    
+    
                     [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
                 }
                 
-            }];
+            }
         }
             break;
         case UIGestureRecognizerStateEnded:
@@ -173,7 +189,8 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
             {
                 [_autoscrollTimer invalidate]; _autoscrollTimer = nil;
             }
-            self.movParams.originalCell.alpha = 1.;
+            self.movParams.originalCell.hidden = NO;
+            self.movParams.originalCell.alpha = 1;
             [self.movParams.fakeCell removeFromSuperview];
             self.movParams.originalCell = nil;
             self.movParams.fakeCell = nil;
@@ -200,6 +217,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 
 - (void)resetImagesArrayWithOrgIndex:(NSIndexPath *)indOrg toCoverIndex:(NSIndexPath *)indexToCo
 {
+    self.movParams.isMoving = YES;
     if (indOrg.section == indexToCo.section) {
         NSMutableArray *mut = [self.imagesArray objectAtIndex:indOrg.section];
         [mut moveObjectFromIndex:indOrg.row toIndex:indexToCo.row];
@@ -215,9 +233,8 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
         NSMutableArray *mu2t = [self.imagesArray objectAtIndex:indexToCo.section];
         [mu2t insertObject:abc atIndex:indexToCo.row];
     }
-    
+
     [_gridView moveItemAtIndexPath:self.movParams.indexToMove toIndexPath:self.movParams.indexToCover];
-    LVLog(@"%@---%@",[self formatIndexPath:self.movParams.indexToMove],[self formatIndexPath:self.movParams.indexToCover]);
     self.movParams.indexToMove = self.movParams.indexToCover;
     self.movParams.indexSelected = self.movParams.indexToCover;
 }
@@ -397,7 +414,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
     CGPoint contentOffset = [_gridView contentOffset];
     contentOffset.y += autoscrollDistance;
     [_gridView setContentOffset:contentOffset];
-    _movParams.fakeCell.center = CGPointMake(_movParams.fakeCell.center.x, _movParams.fakeCell.center.y + autoscrollDistance);
+//    _movParams.fakeCell.center = CGPointMake(_movParams.fakeCell.center.x, _movParams.fakeCell.center.y + autoscrollDistance);
 }
 
 
