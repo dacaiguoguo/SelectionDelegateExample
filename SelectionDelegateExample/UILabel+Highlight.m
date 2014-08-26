@@ -12,7 +12,7 @@
 
 - (void)setHighlighted:(BOOL)highlighted
 {
-    NSLog(@"Label %@ highlight: %@", self.text, highlighted ? @"ON" : @"OFF");
+    LVLog(@"Label %@ highlight: %@", self.text, highlighted ? @"ON" : @"OFF");
 }
 
 @end

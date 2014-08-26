@@ -131,20 +131,20 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
                 if (CGRectContainsPoint(rect, self.movParams.fakeCell.center)) {
                     self.movParams.indexToCover = [_gridView indexPathForCell:obj];
                     if (self.movParams.indexToMove != nil && [self.movParams.indexToCover compare:self.movParams.indexToMove]==NSOrderedSame) {
-                        NSLog(@"*stop:%@",@"YES");
+                        LVLog(@"*stop:%@",@"YES");
                         *stop = YES;
                         return;
                     }
                     
                     if (self.movParams.indexToCover.section == self.movParams.indexSelected.section ) {
-                        NSLog(@"dacaiguoguo:\n%s\n%d",__func__,__LINE__);
+                        LVLog(@"dacaiguoguo:\n%s\n%d",__func__,__LINE__);
                         
                     }else{
-                        NSLog(@"dacaiguoguo:\n%s\n%d",__func__,__LINE__);
+                        LVLog(@"dacaiguoguo:\n%s\n%d",__func__,__LINE__);
                     }
                     [self resetImagesArrayWithOrgIndex:self.movParams.indexSelected toCoverIndex:self.movParams.indexToCover];
                     [_gridView moveItemAtIndexPath:self.movParams.indexToMove toIndexPath:self.movParams.indexToCover];
-                    NSLog(@"%@---%@",[self formatIndexPath:self.movParams.indexToMove],[self formatIndexPath:self.movParams.indexToCover]);
+                    LVLog(@"%@---%@",[self formatIndexPath:self.movParams.indexToMove],[self formatIndexPath:self.movParams.indexToCover]);
                     self.movParams.indexToMove = self.movParams.indexToCover;
                     self.movParams.indexSelected = self.movParams.indexToCover;
 
@@ -187,10 +187,10 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
         [mut moveObjectFromIndex:indOrg.row toIndex:indexToCo.row];
         
     }else{
-        NSLog(@"%ld",(long)indOrg.row);
-        NSLog(@"%ld",(long)indexToCo.row);
+        LVLog(@"%ld",(long)indOrg.row);
+        LVLog(@"%ld",(long)indexToCo.row);
         NSMutableArray *mutSelect = [self.imagesArray objectAtIndex:indOrg.section];
-        NSLog(@"%@",mutSelect);
+        LVLog(@"%@",mutSelect);
 
         id abc = [mutSelect objectAtIndex:indOrg.row];
         [mutSelect removeObjectAtIndex:indOrg.row];
@@ -206,8 +206,8 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
         [self transitionFromPress:lo];
     }
     @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-        NSLog(@"%@",exception.callStackSymbols);
+        LVLog(@"%@",exception);
+        LVLog(@"%@",exception.callStackSymbols);
     }
     @finally {
         
@@ -221,7 +221,7 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 
 - (NSInteger)collectionView:(PSUICollectionView *)view numberOfItemsInSection:(NSInteger)section {
     NSInteger ret = [self.imagesArray[section] count];
-    NSLog(@"ret+:%ld",(long)ret);
+    LVLog(@"ret+:%ld",(long)ret);
     return ret;
 }
 
@@ -260,30 +260,30 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 
 - (void)collectionView:(PSTCollectionView *)collectionView didHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    //    NSLog(@"Delegate cell %@ : HIGHLIGHTED", [self formatIndexPath:indexPath]);
+    //    LVLog(@"Delegate cell %@ : HIGHLIGHTED", [self formatIndexPath:indexPath]);
 }
 
 - (void)collectionView:(PSTCollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    //    NSLog(@"Delegate cell %@ : UNHIGHLIGHTED", [self formatIndexPath:indexPath]);
+    //    LVLog(@"Delegate cell %@ : UNHIGHLIGHTED", [self formatIndexPath:indexPath]);
 }
 
 - (void)collectionView:(PSTCollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Delegate cell %@ : SELECTED", [self formatIndexPath:indexPath]);
+    LVLog(@"Delegate cell %@ : SELECTED", [self formatIndexPath:indexPath]);
 }
 
 - (void)collectionView:(PSTCollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    //    NSLog(@"Delegate cell %@ : DESELECTED", [self formatIndexPath:indexPath]);
+    //    LVLog(@"Delegate cell %@ : DESELECTED", [self formatIndexPath:indexPath]);
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
     self.movParams.indexSelected = indexPath;
     self.movParams.indexToMove = self.movParams.indexSelected;
-    NSLog(@"%@",[self formatIndexPath:self.movParams.indexToMove]);
-    //    NSLog(@"Check delegate: should cell %@ highlight?", [self formatIndexPath:indexPath]);
+    LVLog(@"%@",[self formatIndexPath:self.movParams.indexToMove]);
+    //    LVLog(@"Check delegate: should cell %@ highlight?", [self formatIndexPath:indexPath]);
     return YES;
 }
 
@@ -291,13 +291,13 @@ NSString *CollectionViewCellIdentifier = @"SelectionDelegateExample";
 {
 
 
-    //    NSLog(@"Check delegate: should cell %@ be selected?", [self formatIndexPath:indexPath]);
+    //    LVLog(@"Check delegate: should cell %@ be selected?", [self formatIndexPath:indexPath]);
     return YES;
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    //    NSLog(@"Check delegate: should cell %@ be deselected?", [self formatIndexPath:indexPath]);
+    //    LVLog(@"Check delegate: should cell %@ be deselected?", [self formatIndexPath:indexPath]);
     return YES;
 }
 

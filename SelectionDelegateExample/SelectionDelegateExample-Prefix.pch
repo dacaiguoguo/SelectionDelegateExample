@@ -13,3 +13,10 @@
     #import <Foundation/Foundation.h>
     #import "PSTCollectionView.h"
 #endif
+
+
+#ifdef DEBUG
+#define LVLog(format, ...) NSLog(format, ## __VA_ARGS__)
+#else
+#define LVLog(format, ...) //NSLog(format, ## __VA_ARGS__)
+#endif

@@ -42,7 +42,7 @@ static CGFloat SubTitleLabelHeight = 24;
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
-//    NSLog(@"Cell %@ highlight: %@", _label.text, highlighted ? @"ON" : @"OFF");
+//    LVLog(@"Cell %@ highlight: %@", _label.text, highlighted ? @"ON" : @"OFF");
 //    if (highlighted) {
 //        _label.backgroundColor = [UIColor yellowColor];
 //    }
